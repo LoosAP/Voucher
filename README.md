@@ -7,8 +7,8 @@
 mvn spring-boot:run
 ```
 2. futtatás Intellij IDE-ből:
-- Jobb klikk a `VoucherManagementApplication` osztályon
-- `Run 'VoucherManagementApplication.main()'` kiválasztása
+- Jobb klikk a `VoucherApplication` osztályon
+- `Run 'VoucherApplication.main()'` kiválasztása
 
 ## API végpontok
 
