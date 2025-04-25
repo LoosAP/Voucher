@@ -22,17 +22,17 @@ mvn spring-boot:run
   - username: `admin`
   - password: `admin`
 
-![Auth Example](src\main\resources\static\auth.png)
+![Auth Example](src/main/resources/static/auth.png)
 
 - Post Requesteknél a `Body` fülön a `raw` opciót választjuk, és JSON formátumban adjuk meg az adatokat. Például:
 ```json
 {"code": "TEST123","redemptionLimit": 5,"expiryDate": "2025-12-31T23:59:59"}
 ```
 
-![Post Request](src\main\resources\static\post.png)
+![Post Request](src/main/resources/static/post.png)
 
 - Redeem Requestnél az URL végére a kódot kell beírni, például:
 ```
 localhost:8080/api/redeem/SINGLE
 ```
-![Redeem Request](src\main\resources\static\redeem.png)
+![Redeem Request](src/main/resources/static/redeem.png)
