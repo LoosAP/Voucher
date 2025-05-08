@@ -1,13 +1,9 @@
 package com.loosap.voucher.service;
 
 import com.loosap.voucher.entity.Voucher;
-import com.loosap.voucher.repository.VoucherRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,8 +12,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @TestPropertySource("/application-test.properties")
@@ -59,15 +54,16 @@ class VoucherServiceImplTest {
 
     @Test
     void createVoucher() {
-        Voucher newVoucher = new Voucher(10, ZonedDateTime.of(2025, 12, 31, 23, 59, 59, 0, ZoneId.systemDefault()));
+        Instant now = Instant.now().plusSeconds(86400);
+        Voucher newVoucher = new Voucher(10, now);
         Voucher createdVoucher = voucherService.createVoucher(newVoucher);
 
         assertNotNull(createdVoucher.getId());
         assertEquals(10, createdVoucher.getRedemptionLimit());
         assertEquals(0, createdVoucher.getRedeemedCount());
-        assertEquals(ZonedDateTime.of(2025, 12, 31, 23, 59, 59, 0, ZoneId.systemDefault()), createdVoucher.getExpiryDate());
+        assertEquals(now, createdVoucher.getExpiryDate());
 
-        Voucher expiredVoucher = new Voucher(5, ZonedDateTime.of(2020, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()));
+        Voucher expiredVoucher = new Voucher(5, Instant.now().minusSeconds(86400));
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             voucherService.createVoucher(expiredVoucher);

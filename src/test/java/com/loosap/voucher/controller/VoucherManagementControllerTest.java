@@ -23,6 +23,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.Instant;
 import java.time.ZonedDateTime;
 
 @TestPropertySource("/application-test.properties")
@@ -80,7 +81,8 @@ class VoucherManagementControllerTest {
 
     @Test
     void createVoucherWithAdminAuth() throws Exception {
-        Voucher newVoucher = new Voucher(10, ZonedDateTime.of(2025, 12, 31, 23, 59, 59, 0, ZonedDateTime.now().getZone()));
+        Instant now = Instant.now().plusSeconds(86400);
+        Voucher newVoucher = new Voucher(10, now);
         String voucherJson = objectMapper.writeValueAsString(newVoucher);
 
         mockMvc.perform(post("/api/vouchers")
@@ -90,13 +92,13 @@ class VoucherManagementControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").exists())
                 .andExpect(jsonPath("$.redemptionLimit").value(10))
-                .andExpect(jsonPath("$.expiryDate").value("2025-12-31T23:59:59"));
+                .andExpect(jsonPath("$.expiryDate").value(now.toString()));
 
     }
 
     @Test
     void createVoucherWithoutAuth() throws Exception {
-        Voucher newVoucher = new Voucher(10, ZonedDateTime.of(2025, 12, 31, 23, 59, 59, 0, ZonedDateTime.now().getZone()));
+        Voucher newVoucher = new Voucher(10, Instant.now().plusSeconds(86400));
         String voucherJson = objectMapper.writeValueAsString(newVoucher);
 
         mockMvc.perform(post("/api/vouchers")
@@ -107,7 +109,7 @@ class VoucherManagementControllerTest {
 
     @Test
     void createVoucherWithUserAuth() throws Exception {
-        Voucher newVoucher = new Voucher(10, ZonedDateTime.of(2025, 12, 31, 23, 59, 59, 0, ZonedDateTime.now().getZone()));
+        Voucher newVoucher = new Voucher(10, Instant.now().plusSeconds(86400));
         String voucherJson = objectMapper.writeValueAsString(newVoucher);
 
         mockMvc.perform(post("/api/vouchers")

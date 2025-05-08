@@ -7,7 +7,7 @@ import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,7 +24,7 @@ class VoucherValidationTest {
 
     @Test
     void testRedeemedCountExceedsRedemptionLimit() {
-        Voucher voucher = new Voucher(1, ZonedDateTime.now().plusDays(1));
+        Voucher voucher = new Voucher(1, Instant.now().plusSeconds(86400));
         voucher.setRedeemedCount(2);
 
         Set<ConstraintViolation<Voucher>> violations = validator.validate(voucher);
@@ -34,7 +34,7 @@ class VoucherValidationTest {
 
     @Test
     void testRedeemedCountEqualsRedemptionLimit() {
-        Voucher voucher = new Voucher(10, ZonedDateTime.now().plusDays(1));
+        Voucher voucher = new Voucher(10, Instant.now().plusSeconds(86400));
         voucher.setRedeemedCount(10);
 
         Set<ConstraintViolation<Voucher>> violations = validator.validate(voucher);
@@ -43,7 +43,7 @@ class VoucherValidationTest {
 
     @Test
     void testZeroRedemptionLimitAndRedeemedCount() {
-        Voucher voucher = new Voucher(0, ZonedDateTime.now().plusDays(1));
+        Voucher voucher = new Voucher(0, Instant.now().plusSeconds(86400));
         voucher.setRedeemedCount(1);
 
         Set<ConstraintViolation<Voucher>> violations = validator.validate(voucher);

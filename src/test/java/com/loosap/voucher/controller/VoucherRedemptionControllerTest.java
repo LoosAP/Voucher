@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @TestPropertySource("/application-test.properties")
@@ -77,7 +77,7 @@ class VoucherRedemptionControllerTest {
 
     @Test
     void redeemVoucherWithAdminAuth() throws Exception {
-        mockMvc.perform(post("/api/redeem/SINGLE")
+        mockMvc.perform(get("/api/redeem/SINGLE6a-9d7e-42a1-8a59-59cb91fbc2d4")
                 .with(httpBasic("admin", "admin")))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Voucher redeemed successfully."));
@@ -85,7 +85,7 @@ class VoucherRedemptionControllerTest {
 
     @Test
     void redeemVoucherWithUserAuth() throws Exception {
-        mockMvc.perform(post("/api/redeem/SINGLE")
+        mockMvc.perform(get("/api/redeem/SINGLE6a-9d7e-42a1-8a59-59cb91fbc2d4")
                 .with(httpBasic("user", "user")))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Voucher redeemed successfully."));
@@ -93,39 +93,39 @@ class VoucherRedemptionControllerTest {
 
     @Test
     void redeemVoucherWithoutAuth() throws Exception {
-        mockMvc.perform(post("/api/redeem/SINGLE"))
+        mockMvc.perform(get("/api/redeem/SINGLE6a-9d7e-42a1-8a59-59cb91fbc2d4"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void redeemExpiredVoucherWithAdminAuth() throws Exception {
-        mockMvc.perform(post("/api/redeem/EXPIRED")
+        mockMvc.perform(get("/api/redeem/EXPIREDf-9a7e-45d8-b3a2-e4a3d7e2f09f")
                 .with(httpBasic("admin", "admin")))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Voucher redemption failed."));
+                .andExpect(content().string("Voucher has expired."));
     }
 
     @Test
     void redeemExpiredVoucherWithUserAuth() throws Exception {
-        mockMvc.perform(post("/api/redeem/EXPIRED")
+        mockMvc.perform(get("/api/redeem/EXPIREDf-9a7e-45d8-b3a2-e4a3d7e2f09f")
                 .with(httpBasic("user", "user")))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Voucher redemption failed."));
+                .andExpect(content().string("Voucher has expired."));
     }
 
     @Test
     void redeemVoucherExceedingLimitWithAdminAuth() throws Exception {
         for (int i = 0; i < 3; i++) {
-            mockMvc.perform(post("/api/redeem/THREETIMES")
+            mockMvc.perform(get("/api/redeem/3TIMES4b-634f-4dd1-b4df-8f7e32ab7dc6")
                     .with(httpBasic("admin", "admin")))
                     .andExpect(status().isOk())
                     .andExpect(content().string("Voucher redeemed successfully."));
         }
 
-        mockMvc.perform(post("/api/redeem/THREETIMES")
+        mockMvc.perform(get("/api/redeem/3TIMES4b-634f-4dd1-b4df-8f7e32ab7dc6")
                 .with(httpBasic("admin", "admin")))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Voucher redemption failed."));
+                .andExpect(content().string("Voucher has reached its redemption limit."));
     }
 
 
