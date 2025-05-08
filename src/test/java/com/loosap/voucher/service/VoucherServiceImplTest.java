@@ -16,7 +16,8 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @TestPropertySource("/application-test.properties")
@@ -58,15 +59,15 @@ class VoucherServiceImplTest {
 
     @Test
     void createVoucher() {
-        Voucher newVoucher = new Voucher(10, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+        Voucher newVoucher = new Voucher(10, ZonedDateTime.of(2025, 12, 31, 23, 59, 59, 0, ZoneId.systemDefault()));
         Voucher createdVoucher = voucherService.createVoucher(newVoucher);
 
         assertNotNull(createdVoucher.getId());
         assertEquals(10, createdVoucher.getRedemptionLimit());
         assertEquals(0, createdVoucher.getRedeemedCount());
-        assertEquals(LocalDateTime.of(2025, 12, 31, 23, 59, 59), createdVoucher.getExpiryDate());
+        assertEquals(ZonedDateTime.of(2025, 12, 31, 23, 59, 59, 0, ZoneId.systemDefault()), createdVoucher.getExpiryDate());
 
-        Voucher expiredVoucher = new Voucher(5, LocalDateTime.of(2020, 1, 1, 0, 0, 0));
+        Voucher expiredVoucher = new Voucher(5, ZonedDateTime.of(2020, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()));
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             voucherService.createVoucher(expiredVoucher);

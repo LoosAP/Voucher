@@ -5,7 +5,7 @@ import com.loosap.voucher.repository.VoucherRepository;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -19,18 +19,18 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public Voucher createVoucher(@Valid Voucher voucher) {
-        if (voucher.getExpiryDate().isBefore(LocalDateTime.now())) {
+        if (voucher.getExpiryDate().isBefore(ZonedDateTime.now())) {
             throw new IllegalArgumentException("Expiry date must be in the future.");
         }
 
         Voucher savedVoucher = voucherRepository.save(voucher);
-        return voucherRepository.save(voucher);
+        return savedVoucher;
     }
 
     @Override
     public boolean redeemVoucher(String code) {
         return voucherRepository.findByCode(code)
-                .filter(voucher -> voucher.getExpiryDate().isAfter(LocalDateTime.now()))
+                .filter(voucher -> voucher.getExpiryDate().isAfter(ZonedDateTime.now()))
                 .filter(voucher -> voucher.getRedemptionLimit() == 0 || voucher.getRedeemedCount() < voucher.getRedemptionLimit())
                 .map(voucher -> {
                     voucher.setRedeemedCount(voucher.getRedeemedCount() + 1);
@@ -43,7 +43,7 @@ public class VoucherServiceImpl implements VoucherService {
     @Override
     public String getRedeemDenyReason(String code) {
         return voucherRepository.findByCode(code)
-                .filter(voucher -> voucher.getExpiryDate().isBefore(LocalDateTime.now()))
+                .filter(voucher -> voucher.getExpiryDate().isBefore(ZonedDateTime.now()))
                 .map(voucher -> "Voucher has expired.")
                 .orElseGet(() -> voucherRepository.findByCode(code)
                         .filter(voucher -> voucher.getRedemptionLimit() > 0 && voucher.getRedeemedCount() >= voucher.getRedemptionLimit())

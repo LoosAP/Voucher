@@ -4,7 +4,7 @@ import com.loosap.voucher.validation.ValidValueRange;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Entity
@@ -26,12 +26,12 @@ public class Voucher {
     private int redeemedCount;
 
     @Future(message = "Expiry date must be in the future")
-    private LocalDateTime expiryDate;
+    private ZonedDateTime expiryDate;
 
     public Voucher() {
     }
 
-    public Voucher(int redemptionLimit, LocalDateTime expiryDate) {
+    public Voucher(int redemptionLimit, ZonedDateTime expiryDate) {
         this.redemptionLimit = redemptionLimit;
         this.expiryDate = expiryDate;
         this.redeemedCount = 0;
@@ -44,11 +44,11 @@ public class Voucher {
         }
     }
 
-    public LocalDateTime getExpiryDate() {
+    public ZonedDateTime getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(LocalDateTime expiryDate) {
+    public void setExpiryDate(ZonedDateTime expiryDate) {
         this.expiryDate = expiryDate;
     }
 

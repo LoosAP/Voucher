@@ -23,7 +23,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @TestPropertySource("/application-test.properties")
 @AutoConfigureMockMvc
@@ -80,7 +80,7 @@ class VoucherManagementControllerTest {
 
     @Test
     void createVoucherWithAdminAuth() throws Exception {
-        Voucher newVoucher = new Voucher(10, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+        Voucher newVoucher = new Voucher(10, ZonedDateTime.of(2025, 12, 31, 23, 59, 59, 0, ZonedDateTime.now().getZone()));
         String voucherJson = objectMapper.writeValueAsString(newVoucher);
 
         mockMvc.perform(post("/api/vouchers")
@@ -96,7 +96,7 @@ class VoucherManagementControllerTest {
 
     @Test
     void createVoucherWithoutAuth() throws Exception {
-        Voucher newVoucher = new Voucher(10, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+        Voucher newVoucher = new Voucher(10, ZonedDateTime.of(2025, 12, 31, 23, 59, 59, 0, ZonedDateTime.now().getZone()));
         String voucherJson = objectMapper.writeValueAsString(newVoucher);
 
         mockMvc.perform(post("/api/vouchers")
@@ -107,7 +107,7 @@ class VoucherManagementControllerTest {
 
     @Test
     void createVoucherWithUserAuth() throws Exception {
-        Voucher newVoucher = new Voucher(10, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+        Voucher newVoucher = new Voucher(10, ZonedDateTime.of(2025, 12, 31, 23, 59, 59, 0, ZonedDateTime.now().getZone()));
         String voucherJson = objectMapper.writeValueAsString(newVoucher);
 
         mockMvc.perform(post("/api/vouchers")
