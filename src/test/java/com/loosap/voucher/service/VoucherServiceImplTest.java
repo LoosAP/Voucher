@@ -58,16 +58,15 @@ class VoucherServiceImplTest {
 
     @Test
     void createVoucher() {
-        Voucher newVoucher = new Voucher("NEW", 10, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+        Voucher newVoucher = new Voucher(10, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
         Voucher createdVoucher = voucherService.createVoucher(newVoucher);
 
         assertNotNull(createdVoucher.getId());
-        assertEquals("NEW", createdVoucher.getCode());
         assertEquals(10, createdVoucher.getRedemptionLimit());
         assertEquals(0, createdVoucher.getRedeemedCount());
         assertEquals(LocalDateTime.of(2025, 12, 31, 23, 59, 59), createdVoucher.getExpiryDate());
 
-        Voucher expiredVoucher = new Voucher("EXPIRED", 5, LocalDateTime.of(2020, 1, 1, 0, 0, 0));
+        Voucher expiredVoucher = new Voucher(5, LocalDateTime.of(2020, 1, 1, 0, 0, 0));
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             voucherService.createVoucher(expiredVoucher);
@@ -79,22 +78,31 @@ class VoucherServiceImplTest {
 
     @Test
     void redeemVoucherRedeemed() {
-        boolean success = voucherService.redeemVoucher("REDEEMED");
+        boolean success = voucherService.redeemVoucher("REDEEMED-c768-40c1-bf6e-0cf1f6fa85a1");
         assertFalse(success);
     }
     @Test
     void redeemVoucherExpired() {
-        boolean success = voucherService.redeemVoucher("EXPIRED");
+        boolean success = voucherService.redeemVoucher("EXPIREDf-9a7e-45d8-b3a2-e4a3d7e2f09f");
         assertFalse(success);
     }
 
     @Test
     void redeemVoucherUnlimited() {
-        boolean success = voucherService.redeemVoucher("MULTI");
+        boolean success = voucherService.redeemVoucher("MULTIe67-0ac4-4b2a-b511-6bde144f4f12");
         assertTrue(success);
 
-        boolean secondAttempt = voucherService.redeemVoucher("MULTI");
+        boolean secondAttempt = voucherService.redeemVoucher("MULTIe67-0ac4-4b2a-b511-6bde144f4f12");
         assertTrue(secondAttempt);
+    }
+
+    @Test
+    void redeemVoucherSingle() {
+        boolean success = voucherService.redeemVoucher("SINGLE6a-9d7e-42a1-8a59-59cb91fbc2d4");
+        assertTrue(success);
+
+        boolean secondAttempt = voucherService.redeemVoucher("SINGLE6a-9d7e-42a1-8a59-59cb91fbc2d4");
+        assertFalse(secondAttempt);
     }
 
     @Test

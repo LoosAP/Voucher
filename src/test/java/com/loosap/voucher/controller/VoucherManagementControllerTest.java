@@ -80,7 +80,7 @@ class VoucherManagementControllerTest {
 
     @Test
     void createVoucherWithAdminAuth() throws Exception {
-        Voucher newVoucher = new Voucher("NEW", 10, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+        Voucher newVoucher = new Voucher(10, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
         String voucherJson = objectMapper.writeValueAsString(newVoucher);
 
         mockMvc.perform(post("/api/vouchers")
@@ -88,7 +88,7 @@ class VoucherManagementControllerTest {
                 .content(voucherJson)
                 .with(httpBasic("admin", "admin")))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("NEW"))
+                .andExpect(jsonPath("$.code").exists())
                 .andExpect(jsonPath("$.redemptionLimit").value(10))
                 .andExpect(jsonPath("$.expiryDate").value("2025-12-31T23:59:59"));
 
@@ -96,7 +96,7 @@ class VoucherManagementControllerTest {
 
     @Test
     void createVoucherWithoutAuth() throws Exception {
-        Voucher newVoucher = new Voucher("NEW", 10, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+        Voucher newVoucher = new Voucher(10, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
         String voucherJson = objectMapper.writeValueAsString(newVoucher);
 
         mockMvc.perform(post("/api/vouchers")
@@ -107,7 +107,7 @@ class VoucherManagementControllerTest {
 
     @Test
     void createVoucherWithUserAuth() throws Exception {
-        Voucher newVoucher = new Voucher("NEW", 10, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+        Voucher newVoucher = new Voucher(10, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
         String voucherJson = objectMapper.writeValueAsString(newVoucher);
 
         mockMvc.perform(post("/api/vouchers")

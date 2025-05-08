@@ -3,6 +3,7 @@ package com.loosap.voucher.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 public class Voucher {
@@ -10,6 +11,7 @@ public class Voucher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(updatable = false, nullable = false, unique = true)
     private String code;
 
     private int redemptionLimit;
@@ -21,11 +23,17 @@ public class Voucher {
     public Voucher() {
     }
 
-    public Voucher(String code, int redemptionLimit, LocalDateTime expiryDate) {
-        this.code = code;
+    public Voucher(int redemptionLimit, LocalDateTime expiryDate) {
         this.redemptionLimit = redemptionLimit;
         this.expiryDate = expiryDate;
         this.redeemedCount = 0;
+    }
+
+    @PrePersist
+    public void generateCode() {
+        if (this.code == null) {
+            this.code = UUID.randomUUID().toString();
+        }
     }
 
     public LocalDateTime getExpiryDate() {
@@ -54,10 +62,6 @@ public class Voucher {
 
     public String getCode() {
         return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public Long getId() {
