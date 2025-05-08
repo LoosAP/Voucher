@@ -2,6 +2,7 @@ package com.loosap.voucher.service;
 
 import com.loosap.voucher.entity.Voucher;
 import com.loosap.voucher.repository.VoucherRepository;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public Voucher createVoucher(Voucher voucher) {
+    public Voucher createVoucher(@Valid Voucher voucher) {
         if (voucher.getExpiryDate().isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("Expiry date must be in the future.");
         }
@@ -37,6 +38,17 @@ public class VoucherServiceImpl implements VoucherService {
                     return true;
                 })
                 .orElse(false);
+    }
+
+    @Override
+    public String getRedeemDenyReason(String code) {
+        return voucherRepository.findByCode(code)
+                .filter(voucher -> voucher.getExpiryDate().isBefore(LocalDateTime.now()))
+                .map(voucher -> "Voucher has expired.")
+                .orElseGet(() -> voucherRepository.findByCode(code)
+                        .filter(voucher -> voucher.getRedemptionLimit() > 0 && voucher.getRedeemedCount() >= voucher.getRedemptionLimit())
+                        .map(voucher -> "Voucher has reached its redemption limit.")
+                        .orElse("Voucher not found."));
     }
 
     @Override

@@ -20,7 +20,8 @@ public class VoucherRedemptionController {
         if (success) {
             return ResponseEntity.ok("Voucher redeemed successfully.");
         } else {
-            return ResponseEntity.badRequest().body("Voucher redemption failed.");
+
+            return ResponseEntity.badRequest().body(voucherService.getRedeemDenyReason(code));
         }
     }
 }

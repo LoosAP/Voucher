@@ -1,11 +1,14 @@
 package com.loosap.voucher.entity;
 
+import com.loosap.voucher.validation.ValidValueRange;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@ValidValueRange(message = "Redeemed count cannot exceed redemption limit")
 public class Voucher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,10 +17,15 @@ public class Voucher {
     @Column(updatable = false, nullable = false, unique = true)
     private String code;
 
+    @Min(value = 0, message = "Redemption limit must be greater than or equal to 0")
+    @Max(value = 1000, message = "Redemption limit must be less than or equal to 1000")
     private int redemptionLimit;
 
+    @Min(value = 0, message = "Redeemed count must be greater than or equal to 0")
+    @Max(value = 1000, message = "Redeemed count must be less than or equal to 1000")
     private int redeemedCount;
 
+    @Future(message = "Expiry date must be in the future")
     private LocalDateTime expiryDate;
 
     public Voucher() {

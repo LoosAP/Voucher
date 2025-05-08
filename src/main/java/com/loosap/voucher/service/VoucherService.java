@@ -7,5 +7,6 @@ import java.util.List;
 public interface VoucherService {
     Voucher createVoucher(Voucher voucher);
     boolean redeemVoucher(String code);
+    String getRedeemDenyReason(String code);
     List<Voucher> getAllVouchers();
 }

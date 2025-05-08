@@ -138,6 +138,29 @@ class VoucherManagementControllerTest {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    void redeemExpiredVoucher() throws Exception {
+        mockMvc.perform(get("/api/redeem/EXPIREDf-9a7e-45d8-b3a2-e4a3d7e2f09f")
+                        .with(httpBasic("admin", "admin")))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Voucher has expired."));
+    }
+    @Test
+    void redeemRedeemedVoucher() throws Exception {
+        mockMvc.perform(get("/api/redeem/REDEEMED-c768-40c1-bf6e-0cf1f6fa85a1")
+                        .with(httpBasic("admin", "admin")))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Voucher has reached its redemption limit."));
+    }
+
+    @Test
+    void redeemNonExistentVoucher() throws Exception {
+        mockMvc.perform(get("/api/redeem/EMPTY")
+                        .with(httpBasic("admin", "admin")))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Voucher not found."));
+    }
+
     @AfterEach
     void tearDownDatabase() {
         jdbc.execute(sqlDeleteVoucher);
