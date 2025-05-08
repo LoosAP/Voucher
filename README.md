@@ -26,9 +26,8 @@ mvn spring-boot:run
 
 - Post Requesteknél a `Body` fülön a `raw` opciót választjuk, és JSON formátumban adjuk meg az adatokat. Például:
 ```json
-{"code": "TEST123","redemptionLimit": 5,"expiryDate": "2025-12-31T23:59:59"}
+{"redemptionLimit": 5,"expiryDate": "2025-12-31T23:59+00:00"}```
 ```
-
 ![Post Request](src/main/resources/static/post.png)
 
 - Redeem Requestnél az URL végére a kódot kell beírni, például:
